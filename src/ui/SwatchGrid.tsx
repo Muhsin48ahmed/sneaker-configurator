@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { COLORS, type ColorId } from '../domain/catalog'
 import { IconCheck } from './icons'
 
@@ -7,11 +8,12 @@ interface SwatchGridProps {
   readonly onSelect: (colorId: ColorId) => void
 }
 
-/** Relative luminance check so the selected tick stays visible on both light and dark swatches. */
+/** Perceived brightness check so the selected tick stays visible on light and dark swatches. */
+const LIGHT_SWATCH_THRESHOLD = 160
 const isLightColor = (hex: string): boolean => {
   const value = Number.parseInt(hex.slice(1), 16)
   const [r, g, b] = [(value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff]
-  return 0.299 * r + 0.587 * g + 0.114 * b > 160
+  return 0.299 * r + 0.587 * g + 0.114 * b > LIGHT_SWATCH_THRESHOLD
 }
 
 export function SwatchGrid({ partLabel, selectedId, onSelect }: SwatchGridProps) {
@@ -26,7 +28,7 @@ export function SwatchGrid({ partLabel, selectedId, onSelect }: SwatchGridProps)
           <label
             key={color.id}
             className={`swatch${isLightColor(color.hex) ? ' swatch--light' : ''}`}
-            style={{ background: color.hex }}
+            style={{ '--swatch': color.hex } as CSSProperties}
             title={color.name}
           >
             <input

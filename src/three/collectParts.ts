@@ -24,6 +24,8 @@ export interface ModelPart {
   readonly normalScale: Vector2
   /** Baked ambient occlusion: cheap, convincing contact darkening in creases. */
   readonly aoMap: Texture | null
+  /** Knit/grain roughness variation (green channel of the glTF ORM texture). */
+  readonly roughnessMap: Texture | null
   readonly side: Side
 }
 
@@ -57,6 +59,7 @@ export const collectParts = (root: Object3D): readonly ModelPart[] => {
     normalMap: mesh.material.normalMap,
     normalScale: mesh.material.normalScale,
     aoMap: mesh.material.aoMap,
+    roughnessMap: mesh.material.roughnessMap,
     side: mesh.material.side,
   }))
 }

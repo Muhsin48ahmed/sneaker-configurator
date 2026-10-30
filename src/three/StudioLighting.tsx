@@ -1,24 +1,38 @@
 import { Environment, Lightformer } from '@react-three/drei'
 
+/** Poly Haven "Studio Small 08" (CC0, Sergej Majboroda): a real softbox photo studio. */
+const STUDIO_HDRI = '/hdri/studio.hdr'
+const ENVIRONMENT_INTENSITY = 0.6
+const SHADOW_MAP_SIZE = 2048
+
 /**
- * A virtual photo studio. Lightformers are emissive cards rendered once into an
- * environment map, so we get softbox-style reflections with no HDR file to download.
+ * Lit like a dark product-launch shoot:
+ * - A real studio HDRI supplies believable reflections (softbox highlights in the patent,
+ *   gentle falloff across the knit) — the biggest single step away from a "CG" look.
+ * - Two cool rim strips are layered into that environment to trace the shoe's silhouette
+ *   against the black stage, plus a faint warm kicker from the front.
+ * - One soft spotlight from above-front is the key light and the only shadow caster.
+ * The environment is baked once (frames={1}); nothing in the studio moves.
  */
 export function StudioLighting() {
   return (
     <>
-      <ambientLight intensity={0.25} />
-      {/* Key light: gives the shoe a clear top-left shading direction. */}
-      <directionalLight position={[3, 5, 4]} intensity={1.4} />
-      <Environment resolution={256} frames={1}>
-        {/* Overhead softbox: broad, soft highlight along the top of the upper. */}
-        <Lightformer form="rect" intensity={3} position={[0, 6, 0]} rotation-x={Math.PI / 2} scale={[10, 6, 1]} />
-        {/* Rim strips: crisp edge highlights that separate the shoe from the background. */}
-        <Lightformer form="rect" intensity={2.5} position={[-6, 1, -2]} rotation-y={Math.PI / 2} scale={[20, 1.2, 1]} />
-        <Lightformer form="rect" intensity={2.5} position={[6, 1, -2]} rotation-y={-Math.PI / 2} scale={[20, 1.2, 1]} />
-        {/* Warm front fill: keeps dark colorways from going muddy. */}
-        <Lightformer form="circle" intensity={1.2} color="#ffe2c4" position={[0, 1, 6]} scale={4} />
+      <Environment files={STUDIO_HDRI} environmentIntensity={ENVIRONMENT_INTENSITY} frames={1}>
+        <Lightformer form="rect" intensity={5} color="#eef2ff" position={[-6, 1.5, -2]} rotation-y={Math.PI / 2.4} scale={[12, 1.2, 1]} />
+        <Lightformer form="rect" intensity={4} color="#eef2ff" position={[6, 1.5, -2]} rotation-y={-Math.PI / 2.4} scale={[12, 1.2, 1]} />
+        <Lightformer form="circle" intensity={0.8} color="#ffd9b0" position={[0, 0.5, 7]} scale={5} />
       </Environment>
+      <spotLight
+        position={[2.5, 6.5, 3.5]}
+        angle={0.42}
+        penumbra={1}
+        intensity={32}
+        decay={2}
+        castShadow
+        shadow-mapSize={[SHADOW_MAP_SIZE, SHADOW_MAP_SIZE]}
+        shadow-bias={-0.0002}
+        shadow-radius={6}
+      />
     </>
   )
 }

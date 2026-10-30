@@ -43,7 +43,8 @@ describe('applyDesignToModelViewer', () => {
     expect(applied).toBe(2)
     expect(caps.calls).toMatchObject({ baseColor: '#2346b8', roughness: 1, metallic: 0, ormTexture: null })
     expect(caps.calls.sheenColor).not.toBe('#000000')
-    expect(sole.calls).toMatchObject({ baseColor: '#b9773e', roughness: 0.85, clearcoat: 0 })
+    // Matte on a rubber sole is satin (0.7), not the fabric 0.85.
+    expect(sole.calls).toMatchObject({ baseColor: '#b9773e', roughness: 0.7, clearcoat: 0 })
   })
 
   test('leaves materials that are not configurable parts alone', () => {
@@ -65,7 +66,8 @@ describe('applyDesignToModelViewer', () => {
     const applied = applyDesignToModelViewer({ model: { materials: [material] } }, varsity())
 
     expect(applied).toBe(1)
-    expect(laces.calls).toMatchObject({ baseColor: '#f4f4f2', roughness: 0.85 })
+    // Matte knit laces: rough fabric (0.9).
+    expect(laces.calls).toMatchObject({ baseColor: '#f4f4f2', roughness: 0.9 })
   })
 
   test('does nothing before the model has loaded', () => {

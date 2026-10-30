@@ -14,7 +14,11 @@ type ModelViewerAttributes = DetailedHTMLProps<HTMLAttributes<ModelViewerElement
   readonly 'camera-orbit'?: string
   readonly 'touch-action'?: string
   readonly 'shadow-intensity'?: string
+  /** Same studio HDRI as the main 3D view, so reflections match. */
   readonly 'environment-image'?: string
+  readonly exposure?: string
+  /** Same Khronos PBR Neutral curve as the main 3D view, so colors match. */
+  readonly 'tone-mapping'?: 'neutral' | 'aces' | 'agx'
   readonly 'interaction-prompt'?: string
 }
 

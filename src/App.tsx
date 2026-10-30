@@ -1,7 +1,9 @@
 import { Suspense, useReducer, useState } from 'react'
 import { ArDialog } from './ar/ArDialog'
+import type { PartId } from './domain/catalog'
 import { configuratorReducer, createInitialState } from './domain/configurator'
 import { useCart } from './hooks/useCart'
+import type { FocusRequest } from './three/cameraMoves'
 import { SneakerStage } from './three/SneakerStage'
 import { CartDrawer } from './ui/CartDrawer'
 import { ConfiguratorPanel, type AddToCartRequest } from './ui/ConfiguratorPanel'
@@ -25,20 +27,28 @@ export default function App() {
   const { cart, dispatch: cartDispatch, totals } = useCart()
   const [isCartOpen, setCartOpen] = useState(false)
   const [isArOpen, setArOpen] = useState(false)
+  const [focus, setFocus] = useState<FocusRequest | null>(null)
 
   const handleAddToCart = (request: AddToCartRequest) => {
     cartDispatch({ type: 'add', ...request })
     setCartOpen(true)
   }
 
+  const handleFocusPart = (partId: PartId) => setFocus((previous) => ({ partId, key: (previous?.key ?? 0) + 1 }))
+
   const cartLabel = `Cart, ${totals.itemCount} item${totals.itemCount === 1 ? '' : 's'}`
 
   return (
     <div className="app">
+      <p className="announcement">Free shipping and 30-day returns on every custom pair</p>
       <header className="topbar">
-        <a className="brand" href="/" aria-label="Aero Studio home">
-          AERO<span>studio</span>
+        <a className="brand" href="/" aria-label="Aero home">
+          <svg className="brand__mark" viewBox="0 0 32 20" aria-hidden="true" focusable="false">
+            <path d="M2 18 14 2h5L9 18H2Zm12 0 9-12h5l-9 12h-5Z" />
+          </svg>
+          AERO
         </a>
+        <span className="topbar__section">Custom Studio</span>
         <button type="button" className="cart-button" aria-label={cartLabel} onClick={() => setCartOpen(true)}>
           <IconBag />
           {totals.itemCount > 0 && (
@@ -54,6 +64,8 @@ export default function App() {
           <ErrorBoundary name="3D stage" fallback={(retry) => <StageFallback onRetry={retry} />}>
             <SneakerStage
               design={state.design}
+              selectedPartId={state.selectedPartId}
+              focus={focus}
               onSelectPart={(partId) => dispatch({ type: 'selectPart', partId })}
               isPaused={isCartOpen || isArOpen}
               actions={
@@ -64,7 +76,12 @@ export default function App() {
             />
           </ErrorBoundary>
         </section>
-        <ConfiguratorPanel state={state} dispatch={dispatch} onAddToCart={handleAddToCart} />
+        <ConfiguratorPanel
+          state={state}
+          dispatch={dispatch}
+          onAddToCart={handleAddToCart}
+          onFocusPart={handleFocusPart}
+        />
       </main>
 
       {isCartOpen && (

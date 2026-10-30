@@ -1,4 +1,5 @@
 import { useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
+import { Select } from '@react-three/postprocessing'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Color, type MeshPhysicalMaterial } from 'three'
 import type { PartId } from '../domain/catalog'
@@ -12,7 +13,12 @@ const MAX_FRAME_DELTA = 1 / 30
 const COLOR_SETTLE_EPSILON = 0.002
 /** Pointer travel (px) above which a click is treated as the end of an orbit drag. */
 const DRAG_THRESHOLD_PX = 4
-const HOVER_GLOW = 0.07
+/**
+ * Mean of the model's roughness texture (green channel, measured: 0.70). three multiplies
+ * roughness × texture, so dividing by the mean keeps each finish's average roughness as
+ * designed while the texture adds realistic knit and grain variation on top.
+ */
+const ROUGHNESS_MAP_MEAN = 0.7
 
 interface PartMeshProps {
   readonly part: ModelPart
@@ -49,41 +55,47 @@ export function PartMesh({ part, spec, isHovered, onHover, onSelect }: PartMeshP
   const handlePointerOut = () => onHover(null)
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
     event.stopPropagation()
-    // Touch has no "pointer out" after a tap, so clear the hover glow ourselves.
+    // Touch has no "pointer out" after a tap, so clear the hover outline ourselves.
     if ('pointerType' in event.nativeEvent && event.nativeEvent.pointerType === 'touch') onHover(null)
     if (event.delta > DRAG_THRESHOLD_PX) return
     onSelect(part.partId)
   }
 
   const hasSheen = spec.sheenColor !== '#000000'
+  const roughnessScale = part.roughnessMap ? 1 / ROUGHNESS_MAP_MEAN : 1
 
   return (
-    <mesh
-      geometry={part.geometry}
-      position={part.position}
-      quaternion={part.quaternion}
-      scale={part.scale}
-      onPointerOver={handlePointerOver}
-      onPointerOut={handlePointerOut}
-      onClick={handleClick}
-    >
-      <meshPhysicalMaterial
-        ref={materialRef}
-        color={initialColor}
-        roughness={spec.roughness}
-        metalness={spec.metalness}
-        clearcoat={spec.clearcoat}
-        clearcoatRoughness={spec.clearcoatRoughness}
-        sheen={hasSheen ? 1 : 0}
-        sheenColor={spec.sheenColor}
-        sheenRoughness={spec.sheenRoughness}
-        normalMap={part.normalMap}
-        normalScale={part.normalScale}
-        aoMap={part.aoMap}
-        side={part.side}
-        emissive="#ffffff"
-        emissiveIntensity={isHovered ? HOVER_GLOW : 0}
-      />
-    </mesh>
+    // <Select> feeds the hover outline effect; enabled only while this part is hovered.
+    <Select enabled={isHovered}>
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={part.geometry}
+        position={part.position}
+        quaternion={part.quaternion}
+        scale={part.scale}
+        onPointerOver={handlePointerOver}
+        onPointerOut={handlePointerOut}
+        onClick={handleClick}
+      >
+        <meshPhysicalMaterial
+          ref={materialRef}
+          color={initialColor}
+          roughness={spec.roughness * roughnessScale}
+          roughnessMap={part.roughnessMap}
+          metalness={spec.metalness}
+          clearcoat={spec.clearcoat}
+          clearcoatRoughness={spec.clearcoatRoughness}
+          sheen={hasSheen ? 1 : 0}
+          sheenColor={spec.sheenColor}
+          sheenRoughness={spec.sheenRoughness}
+          specularIntensity={spec.specularIntensity}
+          normalMap={part.normalMap}
+          normalScale={part.normalScale}
+          aoMap={part.aoMap}
+          side={part.side}
+        />
+      </mesh>
+    </Select>
   )
 }

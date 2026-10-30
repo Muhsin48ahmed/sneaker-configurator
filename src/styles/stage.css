@@ -1,0 +1,325 @@
+/* ---------- Shell ---------- */
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.announcement {
+  height: var(--announcement-height);
+  display: grid;
+  place-items: center;
+  padding: 0 var(--space-4);
+  background: #000;
+  border-bottom: 1px solid var(--color-hairline);
+  color: var(--color-fg-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: var(--topbar-height);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 var(--space-5);
+  border-bottom: 1px solid var(--color-border);
+  background: rgb(10 10 11 / 0.82);
+  backdrop-filter: saturate(1.4) blur(14px);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-self: start;
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
+  font-weight: 800;
+  font-size: 1.25rem;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+}
+
+.brand__mark {
+  width: 28px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.topbar__section {
+  color: var(--color-fg-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cart-button {
+  position: relative;
+  justify-self: end;
+  display: grid;
+  place-items: center;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  transition: background var(--duration) var(--ease-out);
+}
+
+.cart-button:hover {
+  background: var(--color-sunken);
+}
+
+.cart-button__badge {
+  position: absolute;
+  top: 3px;
+  right: 1px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border: 2px solid var(--color-page);
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
+}
+
+.layout {
+  flex: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--panel-width);
+  /* Bounded row: otherwise the long panel stretches the row and the canvas with it. */
+  grid-template-rows: minmax(0, 1fr);
+  height: calc(100dvh - var(--chrome-height));
+}
+
+/* ---------- 3D stage ---------- */
+.layout__stage {
+  position: relative;
+  min-height: 0;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--color-stage);
+}
+
+.stage__canvas {
+  touch-action: none;
+}
+
+.stage__watermark {
+  position: absolute;
+  bottom: -0.18em;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgb(255 255 255 / 0.012);
+  font-family: var(--font-display);
+  font-stretch: var(--display-stretch);
+  font-weight: 900;
+  font-size: clamp(96px, 17vw, 260px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.stage__chip {
+  position: absolute;
+  top: var(--space-5);
+  left: var(--space-5);
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 10px var(--space-4);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-pill);
+  background: rgb(17 17 19 / 0.72);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-float);
+  font-size: 0.875rem;
+  pointer-events: none;
+}
+
+.stage__chip-label {
+  color: var(--color-fg-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.stage__chip-value {
+  font-weight: 600;
+}
+
+.stage__hint {
+  position: absolute;
+  top: calc(var(--space-5) + 10px);
+  right: var(--space-5);
+  color: var(--color-fg-muted);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.stage__hint strong {
+  color: var(--color-ink);
+}
+
+.stage__toolbar {
+  position: absolute;
+  bottom: var(--space-5);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-hairline);
+  background: rgb(17 17 19 / 0.72);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-float);
+}
+
+.ar-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--tap-size);
+  padding: 0 var(--space-5) 0 var(--space-4);
+  margin-left: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background var(--duration) var(--ease-out);
+}
+
+.ar-button:hover {
+  background: var(--color-ink-hover);
+}
+
+.stage-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  gap: var(--space-3);
+  background: var(--color-stage);
+  color: var(--color-fg-muted);
+  font-size: 0.8125rem;
+  text-align: center;
+  transition: opacity 500ms var(--ease-out), visibility 500ms;
+}
+
+.stage-loader .canvas-loader__track {
+  width: 220px;
+}
+
+.stage-loader--done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.canvas-loader__track {
+  height: 2px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: rgb(255 255 255 / 0.12);
+}
+
+.canvas-loader__bar {
+  display: block;
+  height: 100%;
+  background: var(--color-ink);
+  transform-origin: left;
+  transition: transform var(--duration) linear;
+}
+
+.stage--fallback {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  text-align: center;
+  font-weight: 600;
+}
+
+.stage__fallback-note {
+  max-width: 34ch;
+  color: var(--color-fg-muted);
+  font-weight: 400;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  :root {
+    --panel-width: 400px;
+  }
+
+  .stage__hint {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .layout {
+    display: block;
+    height: auto;
+  }
+
+  .layout__stage {
+    height: 58svh;
+    min-height: 360px;
+  }
+
+  .topbar__section {
+    display: none;
+  }
+
+  .topbar {
+    grid-template-columns: 1fr auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    padding: 0 var(--space-4);
+  }
+
+  .stage__chip {
+    top: var(--space-3);
+    left: var(--space-3);
+  }
+
+  .stage__toolbar {
+    bottom: var(--space-3);
+  }
+
+  /* Pinch zooms on phones, so drop the zoom buttons to keep the toolbar inside 375px. */
+  .stage__toolbar .icon-button[aria-label^='Zoom'] {
+    display: none;
+  }
+}

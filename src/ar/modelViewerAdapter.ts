@@ -58,7 +58,8 @@ export const applyDesignToModelViewer = (viewer: ModelViewerLike, design: Design
 
   configurable.forEach((material) => {
     const { colorId, finishId } = design[material.name as keyof Design]
-    const spec = surfaceSpec(findColor(colorId)?.hex ?? '#888888', finishId)
+    const substrate = findPart(material.name)?.substrate ?? 'synthetic'
+    const spec = surfaceSpec(findColor(colorId)?.hex ?? '#888888', finishId, substrate)
     const pbr = material.pbrMetallicRoughness
     pbr.setBaseColorFactor(spec.color)
     pbr.setMetallicFactor(spec.metalness)

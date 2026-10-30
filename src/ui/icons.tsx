@@ -73,6 +73,40 @@ export const IconTrash = () => (
   </Icon>
 )
 
+export const IconChevronLeft = () => (
+  <Icon>
+    <path d="m15 18-6-6 6-6" />
+  </Icon>
+)
+
+export const IconChevronRight = () => (
+  <Icon>
+    <path d="m9 18 6-6-6-6" />
+  </Icon>
+)
+
+export const IconTruck = () => (
+  <Icon>
+    <path d="M3 6h11v10H3zM14 10h4l3 3v3h-7" />
+    <circle cx="7" cy="17.5" r="1.5" />
+    <circle cx="17" cy="17.5" r="1.5" />
+  </Icon>
+)
+
+export const IconReturn = () => (
+  <Icon>
+    <path d="M9 14 4 9l5-5" />
+    <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+  </Icon>
+)
+
+export const IconClock = () => (
+  <Icon>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 7v5l3 2" />
+  </Icon>
+)
+
 export const IconCheck = () => (
   <Icon>
     <path d="m5 12 5 5L20 7" />

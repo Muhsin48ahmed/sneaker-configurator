@@ -8,10 +8,13 @@
 export type PartId = 'laces' | 'mesh' | 'caps' | 'inner' | 'sole' | 'stripes' | 'band' | 'patch'
 export type ColorId = string
 export type FinishId = 'matte' | 'suede' | 'leather' | 'patent' | 'metallic'
+/** What the part is physically made of; decides how a plain "Matte" finish actually looks. */
+export type Substrate = 'knit' | 'synthetic' | 'rubber'
 
 export interface Part {
   readonly id: PartId
   readonly label: string
+  readonly substrate: Substrate
   readonly finishIds: readonly FinishId[]
 }
 
@@ -30,6 +33,8 @@ export interface FinishSurface {
   /** 0 = no sheen, 1 = full velvety sheen tinted from the base color. */
   readonly sheen: number
   readonly sheenRoughness: number
+  /** Strength of the mirror-like highlight. Low for fabrics, which otherwise read as plastic. */
+  readonly specularIntensity: number
 }
 
 export interface Finish {
@@ -65,14 +70,14 @@ export const SIZES: readonly string[] = [
 ]
 
 export const PARTS: readonly Part[] = [
-  { id: 'mesh', label: 'Upper', finishIds: ['matte', 'suede', 'leather', 'patent'] },
-  { id: 'caps', label: 'Toe & heel caps', finishIds: ['matte', 'suede', 'leather', 'patent', 'metallic'] },
-  { id: 'stripes', label: 'Side stripes', finishIds: ['matte', 'leather', 'patent', 'metallic'] },
-  { id: 'band', label: 'Heel band', finishIds: ['matte', 'leather', 'patent', 'metallic'] },
-  { id: 'patch', label: 'Tongue patch', finishIds: ['matte', 'leather', 'metallic'] },
-  { id: 'laces', label: 'Laces', finishIds: ['matte', 'metallic'] },
-  { id: 'inner', label: 'Lining', finishIds: ['matte', 'suede'] },
-  { id: 'sole', label: 'Sole', finishIds: ['matte', 'patent'] },
+  { id: 'mesh', label: 'Upper', substrate: 'knit', finishIds: ['matte', 'suede', 'leather', 'patent'] },
+  { id: 'caps', label: 'Toe & heel caps', substrate: 'synthetic', finishIds: ['matte', 'suede', 'leather', 'patent', 'metallic'] },
+  { id: 'stripes', label: 'Side stripes', substrate: 'synthetic', finishIds: ['matte', 'leather', 'patent', 'metallic'] },
+  { id: 'band', label: 'Heel band', substrate: 'synthetic', finishIds: ['matte', 'leather', 'patent', 'metallic'] },
+  { id: 'patch', label: 'Tongue patch', substrate: 'synthetic', finishIds: ['matte', 'leather', 'metallic'] },
+  { id: 'laces', label: 'Laces', substrate: 'knit', finishIds: ['matte', 'metallic'] },
+  { id: 'inner', label: 'Lining', substrate: 'knit', finishIds: ['matte', 'suede'] },
+  { id: 'sole', label: 'Sole', substrate: 'rubber', finishIds: ['matte', 'patent'] },
 ]
 
 export const COLORS: readonly Color[] = [
@@ -95,35 +100,35 @@ export const FINISHES: readonly Finish[] = [
     name: 'Matte',
     description: 'Soft, non-reflective knit',
     priceCents: 0,
-    surface: { roughness: 0.85, metalness: 0, clearcoat: 0, clearcoatRoughness: 0, sheen: 0, sheenRoughness: 0 },
+    surface: { roughness: 0.85, metalness: 0, clearcoat: 0, clearcoatRoughness: 0, sheen: 0, sheenRoughness: 0, specularIntensity: 0.6 },
   },
   {
     id: 'suede',
     name: 'Suede',
     description: 'Brushed nap with a velvet sheen',
     priceCents: 900,
-    surface: { roughness: 1, metalness: 0, clearcoat: 0, clearcoatRoughness: 0, sheen: 1, sheenRoughness: 0.6 },
+    surface: { roughness: 1, metalness: 0, clearcoat: 0, clearcoatRoughness: 0, sheen: 1, sheenRoughness: 0.6, specularIntensity: 0.25 },
   },
   {
     id: 'leather',
     name: 'Leather',
     description: 'Smooth full-grain, satin lustre',
     priceCents: 1200,
-    surface: { roughness: 0.45, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.4, sheen: 0, sheenRoughness: 0 },
+    surface: { roughness: 0.45, metalness: 0, clearcoat: 0.3, clearcoatRoughness: 0.4, sheen: 0, sheenRoughness: 0, specularIntensity: 0.7 },
   },
   {
     id: 'patent',
     name: 'Patent',
     description: 'High-gloss lacquered coat',
     priceCents: 1500,
-    surface: { roughness: 0.2, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, sheen: 0, sheenRoughness: 0 },
+    surface: { roughness: 0.2, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, sheen: 0, sheenRoughness: 0, specularIntensity: 1 },
   },
   {
     id: 'metallic',
     name: 'Metallic',
     description: 'Brushed metal-foil overlay',
     priceCents: 1800,
-    surface: { roughness: 0.3, metalness: 0.85, clearcoat: 0, clearcoatRoughness: 0, sheen: 0, sheenRoughness: 0 },
+    surface: { roughness: 0.3, metalness: 0.85, clearcoat: 0, clearcoatRoughness: 0, sheen: 0, sheenRoughness: 0, specularIntensity: 1 },
   },
 ]
 

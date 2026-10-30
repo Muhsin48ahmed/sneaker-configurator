@@ -2,7 +2,7 @@ import { useCursor, useGLTF } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useState } from 'react'
 import type { Design, PartId } from '../domain/catalog'
-import { findColor } from '../domain/catalog'
+import { findColor, findPart } from '../domain/catalog'
 import { surfaceSpec } from '../domain/surface'
 import { collectParts } from './collectParts'
 import { PartMesh } from './PartMesh'
@@ -38,7 +38,8 @@ export function SneakerModel({ design, onHoverPart, onSelectPart }: SneakerModel
     <group>
       {parts.map((part) => {
         const { colorId, finishId } = design[part.partId]
-        const spec = surfaceSpec(findColor(colorId)?.hex ?? FALLBACK_HEX, finishId)
+        const substrate = findPart(part.partId)?.substrate ?? 'synthetic'
+        const spec = surfaceSpec(findColor(colorId)?.hex ?? FALLBACK_HEX, finishId, substrate)
         return (
           <PartMesh
             key={part.key}

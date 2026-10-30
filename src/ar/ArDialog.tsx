@@ -115,7 +115,9 @@ export function ArDialog({ design, onClose }: ArDialogProps) {
               camera-orbit="35deg 70deg auto"
               touch-action="pan-y"
               shadow-intensity="1"
-              environment-image="neutral"
+              environment-image="/hdri/studio.hdr"
+              exposure="0.9"
+              tone-mapping="neutral"
               interaction-prompt="none"
             >
               {/* model-viewer shows this slot only once it has confirmed AR works on this device. */}

@@ -1,5 +1,6 @@
 import type { Ref } from 'react'
 import { SIZES } from '../domain/catalog'
+import { StepLegend } from './StepLegend'
 
 interface SizePickerProps {
   readonly ref?: Ref<HTMLFieldSetElement>
@@ -10,10 +11,8 @@ interface SizePickerProps {
 
 export function SizePicker({ ref, selectedId, hasError, onSelect }: SizePickerProps) {
   return (
-    <fieldset ref={ref} className={`field${hasError ? ' field--error' : ''}`} aria-describedby="size-help">
-      <legend className="field__legend">
-        Size <span className="field__value">{selectedId ? `US ${selectedId}` : 'Select'}</span>
-      </legend>
+    <fieldset ref={ref} className={`step${hasError ? ' step--error' : ''}`} aria-describedby="size-help">
+      <StepLegend step="03" title="Size" value={selectedId ? `US ${selectedId}` : 'Select a size'} />
       <div className="sizes">
         {SIZES.map((size) => (
           <label key={size} className="size-option">
@@ -30,7 +29,7 @@ export function SizePicker({ ref, selectedId, hasError, onSelect }: SizePickerPr
         ))}
       </div>
       <p id="size-help" className="field__help">
-        US men's sizing. Fits true to size.
+        Unisex US sizing · fits true to size. Between sizes? Go half a size up.
       </p>
     </fieldset>
   )
